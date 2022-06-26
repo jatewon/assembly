@@ -1,0 +1,85 @@
+.model small
+.stack 100
+.data
+ tb1 db 'chuoi 1:$'
+ tb2 db 10,13,'chuoi 2:$'
+ giong db 10,13,'giong nhau$'
+ khac db 109,13,'khac nhau$'
+ cach db '$'
+ str1 db 50 dup(?)
+ str2 db 50 dup(?)
+ 
+ .code 
+   
+        mov ax,@data
+        mov ds,ax
+        
+        mov ah,9
+        lea dx,tb1
+        int 21h
+        
+        lea si,str1
+        mov cx,5
+        input1:
+             mov ah,1
+             int 21h
+             mov [si],al
+             cmp al,0dh
+             je   lev1
+             inc si
+            
+        loop input1
+        lev1:
+            mov bl,'$'
+            mov [si],bl
+            mov ah,09h
+            lea dx,cach
+            int 21h
+            
+        
+        mov ah,9
+        lea  dx,tb2
+        int 21h
+        lea di,str2
+        mov cx,5
+        input2:
+             mov ah,1
+             int 21h
+             mov [di],al
+             cmp al,0dh
+             je   lev2
+             inc di
+         loop input2
+        lev2:
+            mov bl,'$'
+            mov [di],bl
+            mov ah,09h
+            lea dx,cach
+            int 21h
+                    
+        lea si,str1
+        lea di,str2
+        cmpr:
+             mov al,[si]
+             cmp al,[di]  
+             jne khacnhau
+             inc si
+             inc di
+        loop cmpr
+        mov ah,9
+        lea dx,giong
+        int 21h
+        jmp thoat
+        
+        khacnhau:
+               mov ah,9
+               lea dx,khac
+               int 21h
+               jmp thoat
+               
+        thoat:
+            mov ah,4ch
+            int 21h
+ end
+             
+      
