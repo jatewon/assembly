@@ -1,76 +1,75 @@
-  .model small
-.stack 100
+ .model small
+.stack 50
 .data
-   
-    tbKqTong db 13, 10, "Tong = $"
-    tbNhapChuoiSo db 13, 10, "Nhap chuoi so(vd: '12,23,44'): $"
-    str db 100 dup("$")
-    sum dw ?
-    strMsv db 100 dup("$")
+tb1 db 'nhap chuoi:$'
+tb2 db 10,13,'kq:$'
+str db 50 dup('$')
+sum dw ?
+ 
 .code
-    main proc
-        mov ax, @data
-        mov ds, ax
-        mov ah,9
-        lea dx, tbNhapChuoiSo
-        int 21h
+   main proc
+     mov ax,@data
+     mov ds,ax
+     
+     mov ah,9
+     lea dx,tb1
+     int 21h
+     
+     mov ah,0ah
+     lea dx,str
+     int 21h
+     
+     mov ah,9
+     lea dx,tb2
+     int 21h
+     
+     mov cx,0
+     mov cl,[str+1]
+     lea si,[str+2]
+     mov bx,10
+     mov ax,0
+     mov sum,ax
+     lap:
+       mov dx,[si]
+       cmp dl,','
+       je nhay1
+       mul bx
+       mov dx,[si]
+       mov dh,0
+       sub dl,48
+       add ax,dx
+       jmp nhay2
+       nhay1:
+         add sum,ax
+         mov ax,0
+       nhay2:
+          inc si
+          loop lap
+          
+          add sum ,ax
+          mov ax,sum
+          call chuyenchu
          
-        mov ah, 10
-        lea dx, str
-        int 21h
-        
-        mov ah, 9
-        lea dx, tbKqTong
-        int 21h
-        
-        mov cx, 0
-        mov cl, [str + 1]
-        lea si, [str + 2]
-        mov bx, 10
-        mov ax, 0
-        mov sum, ax
-        loop1:
-        mov dx, [si]
-        cmp dl, ","
-        je next1
-        mul bx
-        mov dx, [si]
-        mov dh, 0
-        sub dl, 48
-        add ax, dx
-        jmp next2
-        next1:
-        add sum, ax
-        mov ax, 0
-        next2:
-        inc si
-        loop loop1
-        
-        add sum, ax
-        mov ax, sum
-        call chuyenSoThanhChu
-        
-        mov ah, 4ch
-        int 21h
+      mov ah,4ch
+      int 21h
     main endp
-    
-    chuyenSoThanhChu proc
-        mov bx, 10
-        mov cx, 0
-        chia10:
-        mov dx, 0
-        div bx
-        push dx
-        inc cl
-        cmp ax, 0
-        je hienthi
-        jmp chia10
-        hienthi:
-        pop dx
-        add dl, 48
-        mov ah, 2
-        int 21h
-        loop hienthi
-        ret
-    chuyenSoThanhChu endp
-end
+   
+   chuyenchu proc
+     mov bx,10
+     mov cx,0
+     chia:
+       mov dx,0
+       div bx
+       push dx
+       inc cl
+       cmp ax,0
+       je hienthi
+       jmp chia
+       hienthi:
+         pop dx
+         add dl,48
+         mov ah,2
+         int 21h
+         loop hienthi
+         ret
+    chuyenchu endp
