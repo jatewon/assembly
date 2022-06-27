@@ -3,7 +3,6 @@
 .data
     tbNhapChuoi db 13, 10, "Nhap 1 chuoi bat ki: $"
     tbNhapKiTu db 13, 10, "Nhap 1 ki tu muon tim: $"
-    tbKqChuoi db 13, 10, "Ket qua: $"
     tbKqTimThay db "Ki tu tim thay o vi tri $"
     tbKqKhongTimThay db "Khong tim thay ki tu $"
     str db 100 dup("$")
@@ -26,10 +25,7 @@
         mov ah, 1
         int 21h
         mov bx, 0
-        mov bl, al
-        mov ah, 9
-        lea dx, tbKqChuoi
-        int 21h
+        mov bl, al 
         
         mov al, bl
         mov cx, 0
