@@ -1,11 +1,12 @@
 .model small
 .stack 50
 .data
-tb1 db 'nhap vao chuoi:$'
-tb2 db 10,13,'hien thi so ky tu chuoi:$'
+tb1 db 'nhap chuoi:'
+tb2 db 10,13,'inhoa:$'
 str db 50 dup('$')
+
 .code
-     main proc
+    main proc
          mov ax,@data
          mov ds,ax
          
@@ -21,34 +22,71 @@ str db 50 dup('$')
          lea dx,tb2
          int 21h
          
-         call demchuoi
+         call inhoa
          
          mov ah,4ch
          int 21h
          
     main endp
-     
- demchuoi proc
-    mov ah,0
-    mov al,str+1
-    mov cx,0
-    mov bx,10
+daonguoc proc
+    mov cl,[str+1]
+    lea si,[str+2]
     
     lap:
+        push [si]
+        inc si
+        loop lap
+     mov cl,[str+1]
+     
+    lap1:
+        pop dx
+        mov ah,2
+        int 21h 
+        loop lap1
+        
+        ret
+        
+ daonguoc endp   
+
+demchuoi proc
+     mov ah,0
+     mov al,str+1
+     mov cx,0
+     mov bx,10
+     
+     lap2:
         mov dx,0
         div bx
         push dx
         inc cx
         cmp ax,0
-        jnz lap
-    lap1:
+        jnz lap2
+      lap3:
         pop dx
         add dx,'0'
         mov ah,2
         int 21h
-        loop lap1
-        
-        
-      mov ah,4ch
-      int 21h
+        loop lap3
+   ret
   demchuoi endp
+
+inhoa proc
+    lea si,str+2
+    lap4:
+      mov dl,[si]
+      cmp dl,'a'
+      jl nhay
+      cmp dl,'z'
+      jg nhay
+      sub dl,32
+      
+    nhay:
+        mov ah,2
+        int 21h
+        inc si
+        cmp [si],'$'
+        jne lap4
+    
+   ret
+inhoa endp
+      
