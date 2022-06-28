@@ -26,8 +26,7 @@
          
          mov ah,1
          int 21h
-         
-         mov bx,0
+     
          mov bl,al
          mov al,bl
          mov cx,0
