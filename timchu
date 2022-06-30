@@ -1,83 +1,56 @@
 .model small
-.stack 100
+.stack 100h
 .data
- tb1 db 'nhap vao chuoi$'
- tb2 db 10,13,'nhap vao ki tu:$'
- co db 10,13,'tim thay$'
- ko db 10,13,'ko thay$'
- str db 100 dup('$')
- 
- .code 
-       main proc
-         mov ax,@data
-         mov ds,ax
-         
-         mov ah,9
-         lea dx,tb1
-         int 21h
-         
-         mov ah,0ah
-         lea dx,str
-         int 21h
-         
-         mov ah,9
-         lea dx,tb2
-         int 21h
-         
-         mov ah,1
-         int 21h
-     
-         mov bl,al
-         mov al,bl
-         mov cx,0
-         mov cl,[str+1]
-         lea si,[str+2]
-         mov bx,1
-         lap:
-            mov dx,[si]
-            cmp al,dl
-            je timthay
-            inc si
-            inc bx
-            loop lap
-            jmp kothay
-            
-         timthay:
-             mov ah,9
-             lea dx,co
-             int 21h
-             mov ax,bx
-             call chuyenchu
-             jmp exit
-             
-         kothay:
-             mov ah,9
-             lea dx,ko
-             int 21h
-             jmp exit
-             
-         exit:
-             mov ah,4ch
-             int 21h
-      main endp
-       
- chuyenchu proc
-     mov bx,10
-     mov cx,0
-     chia10:
-      mov dx,0
-      div bx
-      push dx
-      inc cl
-      cmp ax,0
-      je hienthi
-      jmp chia10
-      hienthi:
-         pop dx
-         add dl,48
-         mov ah,2
-         int 21h
-         loop hienthi
-      ret 
-  chuyenchu endp
- end
+    str db 10,13,'Nhap chuoi: $'   
+    kytu db 10,13,'Ky tu muon tim: $'
+    xh db 10,13,'Co xuat hien ky tu$'
+    kxh db 10,13, 'Khong xuat hien ky tu$'
+    arr db 100 dup('$')
+    
+    
+.code
+    mov ax, data
+    mov ds, ax
+    
+    mov ah,9
+    lea dx, str
+    int 21h
+        
+    mov ah, 0Ah
+    lea dx, arr
+    int 21h
+    
+    mov ah, 09h
+    lea dx, kytu
+    int 21h
+    
+    mov ah, 01h
+    int 21h 
+    
+    
+    lea si, [arr+2]
+    
+    ktra:
+        mov dx, [si] 
+        cmp dl, 0Dh
+        je false
+        ;sub kytu, 30h
+        cmp dl, al
+        je true
+        inc si 
+        jmp ktra
+        true:
+            mov ah, 09h
+            lea dx, xh
+            int 21h
+            jmp exit
+        false:
+            mov ah, 09h
+            lea dx, kxh
+            int 21h
+            jmp exit
+        
+    exit:    
+        mov ah, 04Ch
+        int 21h
+    
