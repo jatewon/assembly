@@ -1,0 +1,99 @@
+.model small
+.stack 100
+.data
+    tb1 db 'Nhap 1 so: $'
+    tb2 db 10,13, 'He 16: $'
+    tb3 db 10,13, 'He  2: $' 
+    str db 100 dup('$')
+    num dw ?
+    muoi dw 10
+.code
+     mov ax,@data
+     mov ds,ax
+     
+     mov ah,9
+     lea dx,tb1
+     int 21h
+     mov ah,10
+     lea dx,str
+     int 21h
+     
+     mov cx,0
+     lea si,[str+2] 
+     mov cl,[str+1]
+     mov ax,0
+     he10:
+        mul muoi
+        mov dl,[si]
+        sub dl,'0'
+        add ax,dx
+        inc si
+        loop he10 
+        
+     mov num,ax
+     call he16
+     mov ax,num
+     call he2
+     int 20h
+     
+     he16 proc
+          mov ah,9
+          lea dx,tb2
+          int 21h
+          mov ax,num
+          mov bx,16
+          mov cx,0
+          
+          chia:
+            mov dx,0
+            div bx
+            push dx
+            inc cx
+            cmp ax,0
+            jne chia
+          hienthi:
+            pop dx
+            mov ah,2
+            cmp dl,9
+            ja chu ;Neu lon hon. 10-A, 11-B,12-C,13-D,14-E,15-F
+            add dl,'0'
+            int 21h                                           
+            jmp next16
+          chu:
+            add dl,55
+            int 21h
+            jmp next16
+          next16:
+            loop hienthi
+          
+          mov dl,'h'
+          int 21h
+          ret
+     he16 endp
+     
+     he2 proc
+          mov ah,9
+          lea dx,tb3
+          int 21h
+          
+          mov ax,num
+          mov bx,2
+          mov cx,0
+          chia2:
+            mov dx,0
+            div bx
+            add dl,'0'
+            push dx
+            inc cx
+            cmp ax,0
+            jne chia2
+          hienthi2:
+            pop dx    
+            mov ah,2
+            int 21h
+            loop hienthi2
+          mov dl,'b'
+          int 21h
+          ret
+     he2 endp
+end   
